@@ -446,3 +446,17 @@ if __name__ == '__main__':
         dst_pts = 0
 
 
+
+    #convert to onnx
+    model = SuperPointNet()
+    model.load_state_dict(torch.load('./superpoint_v1.pth'))
+    model.eval()
+
+    dummy_input = torch.empty(1,1,500,500, requires_grad=True)
+    torch.onnx.export(model, dummy_input, 'SuperPoint01.onnx', export_params=True, opset_version=15,
+                      do_constant_folding=True,  # whether to execute constant folding for optimization
+                      input_names=['model_input'],  # the model's input names
+                      output_names=['semi', 'desc'],  # the model's output names
+                      )
+
+
